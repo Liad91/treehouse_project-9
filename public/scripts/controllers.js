@@ -57,12 +57,17 @@ angular.module('app')
       vm.ingredients = res.data;
     });
 
-    if (vm.mode === 'details') {
-      vm.detailsMode = true;
-    }
+    $scope.$watch(function(){return vm.mode}, function() {
+      if (vm.mode === 'details') {
+        vm.detailsMode = true;
+      } else {
+        vm.detailsMode = false;
+      }
+    });
+    
     
     /** If not add mode get the recipe details and set the save method to update the recipe in the DB */
-    if (this.mode !== 'add') {
+    if (vm.mode !== 'add') {
       function getRecipe() {
         var deferred = $q.defer();
         dataService.getRecipeById(vm.id).then(function(res) {
