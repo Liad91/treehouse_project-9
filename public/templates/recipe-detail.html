@@ -1,0 +1,196 @@
+<div class="grid-100 row controls">
+  <div class="grid-50">
+    <h2>{{recipe.name || 'Add New Recipe'}}</h2>
+  </div>
+  <div class="grid-50">
+    <div class="flush-right">
+      <button ng-hide="vm.detailsMode" ng-click="vm.save()">Save Recipe</button>
+      <button ng-show="vm.detailsMode" ng-click="vm.edit(vm.id)">Edit</button>
+      <button ng-show="vm.detailsMode" ng-click="vm.home()" class="secondary">Back</button>
+      <button ng-hide="vm.detailsMode" ng-click="vm.back()" class="secondary">Cancel</button>
+    </div>
+  </div>
+</div>
+<div class="clear"></div>
+
+<div class="grid-100 row" ng-show="vm.errors">
+  <div class="grid-100">
+    <p><i>The following errors were found:</i></p>
+    <ul class="validation-errors" ng-repeat="error in vm.errors">
+      <li>
+        {{error.message}}
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="clear"></div>
+
+<div class="grid-100 row">
+  <div class="grid-20">
+    <p class="label-spacing">
+      <label> Name </label>
+    </p>
+  </div>
+  <div class="grid-40">
+    <p ng-class="{'label-spacing': vm.detailsMode}">
+      {{vm.detailsMode ? vm.recipe.name : ''}}
+      <input type="text" ng-model="vm.recipe.name" ng-hide="vm.detailsMode">
+    </p>
+  </div>
+</div>
+<div class="clear"></div>
+
+<div class="grid-100 row">
+  <div class="grid-20">
+    <p class="label-spacing">
+      <label> Description </label>
+    </p>
+  </div>
+  <div class="grid-60">
+    <p ng-class="{'label-spacing': vm.detailsMode}">
+      {{vm.detailsMode ? vm.recipe.description : ''}}
+      <textarea ng-model="vm.recipe.description" ng-hide="vm.detailsMode"></textarea>
+    </p>
+  </div>
+</div>
+<div class="clear"></div>
+
+<div class="grid-100 row">
+  <div class="grid-20">
+    <p class="label-spacing">
+      <label> Category </label>
+    </p>
+  </div>
+  <div class="grid-30">
+    <p ng-class="{'label-spacing': vm.detailsMode}">
+      {{vm.detailsMode ? vm.recipe.category : ''}}
+      <select ng-model="vm.category" ng-hide="vm.detailsMode" ng-options="cat.name for cat in vm.categories"></select>
+    </p>
+  </div>
+</div>
+<div class="clear"></div>
+
+<div class="grid-100 row">
+  <div class="grid-20">
+    <p class="label-spacing">
+      <label> Prep Time </label>
+    </p>
+  </div>
+  <div class="grid-20">
+    <p ng-class="{'label-spacing': vm.detailsMode}">
+      {{vm.detailsMode ? vm.recipe.prepTime + ' Minutes' : ''}}
+      <input type="number" ng-model="vm.recipe.prepTime" ng-hide="vm.detailsMode">
+    </p>
+  </div>
+</div>
+<div class="clear"></div>
+
+<div class="grid-100 row">
+  <div class="grid-20">
+    <p class="label-spacing">
+      <label> Cook Time </label>
+    </p>
+  </div>
+  <div class="grid-20">
+    <p ng-class="{'label-spacing': vm.detailsMode}">
+      {{vm.detailsMode ? vm.recipe.cookTime + ' Minutes' : ''}}
+      <input type="number" ng-model="vm.recipe.cookTime" ng-hide="vm.detailsMode">
+    </p>
+  </div>
+</div>
+<div class="clear"></div>
+
+<div class="grid-100 row">
+  <div class="grid-20">
+    <p class="label-spacing">
+      <label> Ingredients </label>
+    </p>
+  </div>
+  <div class="grid-30">
+    <p class="label-spacing">
+      <label> Item </label>
+    </p>
+  </div>
+  <div class="grid-30">
+    <p class="label-spacing">
+      <label> Condition </label>
+    </p>
+  </div>
+  <div class="grid-15">
+    <p class="label-spacing">
+      <label> Amount </label>
+    </p>
+  </div>
+
+  <div class="ingredient-row" ng-repeat="ingredient in vm.recipe.ingredients">
+    <div class="prefix-20 grid-30">
+      <p ng-class="{'label-spacing': vm.detailsMode}">
+        {{vm.detailsMode ? ingredient.foodItem : ''}}
+        <select ng-model="ingredient.foodItem" ng-hide="vm.detailsMode">
+          <option value="">Select Item</option>
+          <option ng-repeat="item in vm.ingredients" ng-selected="item.name === ingredient.foodItem">{{item.name}}</option>
+        </select>
+      </p>
+    </div>
+    <div class="grid-30">
+      <p ng-class="{'label-spacing': vm.detailsMode}">
+        {{vm.detailsMode ? ingredient.condition : ''}}
+        <input type="text" ng-model="ingredient.condition" ng-hide="vm.detailsMode">
+      </p>
+    </div>
+    <div class="grid-15">
+      <p ng-class="{'label-spacing': vm.detailsMode}">
+        {{vm.detailsMode ? ingredient.amount : ''}}
+        <input type="text" ng-model="ingredient.amount" ng-hide="vm.detailsMode">
+      </p>
+    </div>
+    <div class="grid-5 pad-top">
+      <p class="flush-right">
+        <a class="no-action-link" ng-hide="vm.detailsMode" ng-click="vm.recipe.ingredients.splice($index,1)"> <img src="/images/delete.svg" height="12px"> </a>
+      </p>
+    </div>
+  </div>
+
+  <div class="prefix-20 grid-80 add-row">
+    <p>
+      <button ng-hide="vm.detailsMode" ng-click="vm.recipe.ingredients.push({})">+ Add Another Ingredient</button>
+    </p>
+  </div>
+
+</div>
+<div class="clear"></div>
+
+<div class="grid-100 row">
+  <div class="grid-20">
+    <p class="label-spacing">
+      <label> Steps </label>
+    </p>
+  </div>
+  <div class="grid-75">
+    <p class="label-spacing">
+      <label> Description </label>
+    </p>
+  </div>
+
+  <div class="step-row" ng-repeat="step in vm.recipe.steps">
+    <div class="prefix-20 grid-75">
+      <p ng-class="{'label-spacing': vm.detailsMode}">
+        {{vm.detailsMode ? step.description : ''}}
+        <input type="text" ng-model="step.description" ng-hide="vm.detailsMode">
+      </p>
+    </div>
+    <div class="grid-5 pad-top">
+      <p class="flush-right">
+        <a class="no-action-link" ng-hide="vm.detailsMode" ng-click="vm.recipe.steps.splice($index, 1)"> <img src="/images/delete.svg" height="12px"> </a>
+      </p>
+    </div>
+  </div>
+
+  <div class="prefix-20 grid-80 add-row">
+    <p>
+     <button ng-hide="vm.detailsMode" ng-click="vm.recipe.steps.push({})">+ Add Another Step</button>
+    </p>
+  </div>
+
+</div>
+<div class="clear"></div>

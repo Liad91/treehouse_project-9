@@ -1,0 +1,39 @@
+<div class="grid-100 row controls">
+  <div class="grid-30">
+    <select ng-model="vm.category" ng-options="cat.name for cat in vm.categories">
+      <option value="">All Categories</option>
+    </select>
+  </div>
+  <div class="grid-70">
+    <div class="flush-right">
+      <button ng-click="vm.addRecipe()">+ Add Recipe</button>
+    </div>
+  </div>
+</div>
+<div class="clear"></div>
+
+<div class="grid-100 row" ng-hide="vm.recipes.length > 0">
+  <div class="grid-70">
+    <p>No recipes found!</p>
+  </div>
+</div>
+
+<div class="grid-100 row addHover" ng-show="vm.recipes" ng-repeat="recipe in vm.recipes">
+  <a href="" ng-click="vm.getRecipeDetails(recipe._id)">
+    <div class="grid-70">
+      <p>
+          {{recipe.name}} - <small>{{recipe.description}}</small>
+      </p>
+    </div>
+  </a>
+  <div class="hoverBlock">
+    <div class="grid-30">
+      <div class="flush-right">
+        <p>
+          <a href="" ng-click="vm.editRecipe(recipe._id)"> <img src="images/edit.svg" height="12px"> Edit </a>
+          <a href="" class="no-action-link" ng-click="vm.deleteRecipe(recipe, $index)"> <img src="images/delete.svg" height="12px"> Delete </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
