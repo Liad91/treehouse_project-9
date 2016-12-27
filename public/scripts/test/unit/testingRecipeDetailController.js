@@ -1,5 +1,5 @@
 describe('Testing RecipeDetailController', function() {
-  var scope, ctrl, ctrlFactory, dataServiceMock, q, deferred, window;
+  var scope, ctrl, ctrlFactory, q, deferred, window, dataServiceMock;
 
   beforeEach(function() {
     dataServiceMock = {
