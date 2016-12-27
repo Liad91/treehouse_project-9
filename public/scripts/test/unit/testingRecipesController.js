@@ -1,5 +1,4 @@
 describe('Testing RecipesController', function() {
-
   var scope, ctrl, dataServiceMock, q, deferred, window;
 
   beforeEach(function() {
@@ -75,5 +74,4 @@ describe('Testing RecipesController', function() {
     expect(ctrl.recipes.length).toBe(1);
     expect(ctrl.recipes[0]).toBe('Healthy Salad');
   });
-
 });

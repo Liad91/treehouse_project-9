@@ -57,13 +57,20 @@ angular.module('app')
       vm.ingredients = res.data;
     });
 
-    if (vm.mode === 'details') {
-      vm.detailsMode = true;
-    }
+    $scope.$watch(
+      function() {
+        return vm.mode
+      }, function() {
+      if (vm.mode === 'details') {
+        vm.detailsMode = true;
+      } else {
+        vm.detailsMode = false;
+      }
+    });
     
     /** If not add mode get the recipe details and set the save method to update the recipe in the DB */
-    if (this.mode !== 'add') {
-      function getRecipe() {
+    if (vm.mode !== 'add') {
+      vm.getRecipe = function() {
         var deferred = $q.defer();
         dataService.getRecipeById(vm.id).then(function(res) {
           vm.recipe = res.data;
@@ -72,32 +79,35 @@ angular.module('app')
         return deferred.promise;
       }
       
-      var promise = getRecipe();
+      vm.promise = vm.getRecipe();
       
-      promise.then(function(category) {
-        dataService.getCategories().then(function(res) {
-          vm.categories = res.data;
-          for (var i = 0; i < res.data.length; i++) {
-            if (res.data[i].name === category) {
-              vm.category = res.data[i];
-              watchCategory();
+      vm.promise.then(
+        vm.getRecipeCategory = function(category) {
+          dataService.getCategories().then(function(res) {
+            vm.categories = res.data;
+            for (var i = 0; i < res.data.length; i++) {
+              if (res.data[i].name === category) {
+                vm.category = res.data[i];
+                vm.watchCategory();
+              }
             }
-          }
-        });
-      });
+          });
+        }
+      );
 
       if (vm.mode === 'edit') {
-        promise.then(function() {
+        vm.promise.then(function() {
           vm.save = function() {
             dataService.updateRecipeById(vm.id, vm.recipe).then(function(res) {
               if (res.status === 200) {
                 navigationService.details(vm.id);
               }
-            }, errorsHandler);
+            }, vm.errorsHandler);
           };
         });
       }
     }
+    
     /** If add mode define a new recipe object and set the save method to add the recipe to the DB */
     else {
       vm.recipe = {};
@@ -107,19 +117,18 @@ angular.module('app')
       dataService.getCategories().then(function(res) {
         vm.categories = res.data;
         vm.category = res.data[0];
-        watchCategory();
+        vm.watchCategory();
       });
 
       vm.save = function() {
         dataService.addRecipe(vm.recipe).then(function() {
           vm.home()
-        }, errorsHandler);
+        }, vm.errorsHandler);
       };
-
     }
 
     /** Update the recipe.category property by the selected category */
-    function watchCategory() {
+    vm.watchCategory = function() {
       $scope.$watch(function() {
         return vm.category;
       }, function() {
@@ -127,12 +136,14 @@ angular.module('app')
       });
     }
 
-    /** check for errors, if error found, push the error 'userMessage' into the errors array */
-    function errorsHandler(error) {
+    /** check for errors, if error found, push the error 'userMessage' into the errors list */
+    vm.errorsHandler = function(error) {
       vm.errors = [];
       for (key in error.data.errors) {
         for (var i = 0; i < error.data.errors[key].length; i++) {
-          vm.errors.push({message: error.data.errors[key][i].userMessage});
+          if (error.data.errors[key][i].userMessage) {
+            vm.errors.push({message: error.data.errors[key][i].userMessage});
+          }
         }
       }
     }
