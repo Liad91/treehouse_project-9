@@ -3,10 +3,10 @@ describe('Testing RecipeDetailController', function() {
 
   beforeEach(function() {
     dataServiceMock = {
-			getFoodItems: function() {
-				deferred = q.defer();
+      getFoodItems: function() {
+        deferred = q.defer();
         return deferred.promise;
-			},
+      },
       getRecipeById: function() {
         deferred = q.defer();
         return q.resolve({
@@ -39,15 +39,15 @@ describe('Testing RecipeDetailController', function() {
         });
       },
       addRecipe: function() {
-				deferred = q.defer();
+        deferred = q.defer();
         return q.resolve(true);
-			}
+      }
     };
 
     navigationServiceMock = {
-			getMode: function() {
-				return 'details';
-			},
+      getMode: function() {
+        return 'details';
+      },
       details: function() {},
       home: function() {},
     };
