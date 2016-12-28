@@ -1,4 +1,5 @@
 describe('Testing RecipeDetailController', function() {
+
   var scope, ctrl, ctrlFactory, q, deferred, window, dataServiceMock;
 
   beforeEach(function() {
@@ -41,7 +42,8 @@ describe('Testing RecipeDetailController', function() {
       addRecipe: function() {
         deferred = q.defer();
         return q.resolve(true);
-      }
+      },
+      rejectHandler: function() {}
     };
 
     navigationServiceMock = {
@@ -105,7 +107,7 @@ describe('Testing RecipeDetailController', function() {
       }
     }
 
-    ctrl.errorsHandler(error);
+    ctrl.submitErrorsHandler(error);
 
     expect(ctrl.errors.length).toBe(3);
     expect(ctrl.errors[0].message).toBe('Ingredients Item #1');
@@ -220,4 +222,22 @@ describe('Testing RecipeDetailController', function() {
       expect(ctrl.home).toHaveBeenCalled();
     });
   });
+
+  describe('API errors handler', function() {
+    it('should display error message in a popup window when a api request fails', function() {
+      dataServiceMock.getFoodItems = function() {
+        deferred = q.defer();
+        return q.reject(true);
+      };
+
+      spyOn(dataServiceMock, 'rejectHandler').and.callThrough();
+
+      ctrl = ctrlFactory();
+
+      scope.$apply();
+
+      expect(dataServiceMock.rejectHandler).toHaveBeenCalled();
+    });
+  });
+  
 });

@@ -15,13 +15,13 @@ angular.module('app')
       if ($window.confirm('Delete ' + recipe.name + '?')) {
         dataService.deleteRecipeById(recipe._id).then(function(res) {
           vm.recipes.splice(index, 1);
-        });
+        }, dataService.rejectHandler);
       }
     };
 
     dataService.getCategories().then(function(res) {
       vm.categories = res.data;
-    });
+    }, dataService.rejectHandler);
     
     /** Update the "Recipes" list by selected category */
     $scope.$watch(function() {
@@ -30,12 +30,12 @@ angular.module('app')
       if (vm.category !== null) {
         dataService.getRecipesByCat(vm.category.name).then(function(res) {
           vm.recipes = res.data;
-        });
+        }, dataService.rejectHandler);
       }
       else {
         dataService.getRecipes().then(function(res) {
           vm.recipes = res.data;
-        });
+        }, dataService.rejectHandler);
       }
     });
   }])
@@ -55,7 +55,7 @@ angular.module('app')
 
     dataService.getFoodItems().then(function(res) {
       vm.ingredients = res.data;
-    });
+    }, dataService.rejectHandler);
 
     $scope.$watch(
       function() {
@@ -75,7 +75,7 @@ angular.module('app')
         dataService.getRecipeById(vm.id).then(function(res) {
           vm.recipe = res.data;
           deferred.resolve(res.data.category);
-        });
+        }, dataService.rejectHandler);
         return deferred.promise;
       }
       
@@ -91,7 +91,7 @@ angular.module('app')
                 vm.watchCategory();
               }
             }
-          });
+          }, dataService.rejectHandler);
         }
       );
 
@@ -102,7 +102,7 @@ angular.module('app')
               if (res.status === 200) {
                 navigationService.details(vm.id);
               }
-            }, vm.errorsHandler);
+            }, vm.submitErrorsHandler);
           };
         });
       }
@@ -118,12 +118,12 @@ angular.module('app')
         vm.categories = res.data;
         vm.category = res.data[0];
         vm.watchCategory();
-      });
+      }, dataService.rejectHandler);
 
       vm.save = function() {
         dataService.addRecipe(vm.recipe).then(function() {
           vm.home()
-        }, vm.errorsHandler);
+        }, vm.submitErrorsHandler);
       };
     }
 
@@ -136,8 +136,8 @@ angular.module('app')
       });
     }
 
-    /** check for errors, if error found, push the error 'userMessage' into the errors list */
-    vm.errorsHandler = function(error) {
+    /** if errors.userMessage push it into the errors list */
+    vm.submitErrorsHandler = function(error) {
       vm.errors = [];
       for (key in error.data.errors) {
         for (var i = 0; i < error.data.errors[key].length; i++) {
@@ -146,5 +146,5 @@ angular.module('app')
           }
         }
       }
-    }
+    };
   }]);

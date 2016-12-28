@@ -34,6 +34,11 @@ angular.module('app')
     this.getFoodItems = function() {
       return $http.get(baseUrl + '/api/fooditems');
     };
+
+    /** Display error message when a api request fails */
+    this.rejectHandler = function() {
+      alert('API Error Occurred, Please Try Again Later.');
+    };
   }])
 
   .service('navigationService', ['$location', '$window', function($location, $window) {
